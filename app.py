@@ -179,6 +179,12 @@ def token_require(f):
 
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
+            user_id = User.decode_auth_token(token)['user_id']
+            user = User.query.get(user_id)
+            print(user)
+
+            if not user.full_name:
+                return jsonify({'message': 'Please fill information!'}), 403    
         except:
             return jsonify({'message': 'Token invalid!'}), 403
 

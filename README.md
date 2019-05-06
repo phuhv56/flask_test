@@ -19,4 +19,7 @@ Get post detail: http://localhost:5000/post/<id> - method GET
 Get own post: http://localhost:5000/own-post - method GET
 
 
+Note: Login with facebook to get full access
+
+
 
