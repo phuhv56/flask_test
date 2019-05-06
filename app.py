@@ -110,7 +110,7 @@ class Post(db.Model):
 
 class PostSchema(ma.Schema):
     class Meta:
-        fields = ['id', 'title', 'contents', 'owner_id', 'likes']
+        fields = ['id', 'title', 'content', 'owner_id']
 
 post_schema = PostSchema(strict=True)
 posts_schema = PostSchema(many=True, strict=True)
@@ -182,6 +182,8 @@ def token_require(f):
         except:
             return jsonify({'message': 'Token invalid!'}), 403
 
+        return f(*args, **kwargs)
+
     return decorated
     
 @app.route("/post", methods=['GET'])
@@ -200,9 +202,8 @@ def save_post():
     owner_id = User.decode_auth_token(token)['user_id']
 
     post = Post(title=title, content = content, owner_id = owner_id)
-    db.session.add(post)
-    db.session.commit()
-    return jsonify({posts})
+    post.save()
+    return jsonify(post_schema.dump(post).data)
 
 @app.route("/post/<id>", methods=['GET'])
 @token_require
@@ -210,9 +211,11 @@ def get_post(id):
     post = Post.query.get(id)
     return post_schema.jsonify(post)
 
-@app.route("/own-post/<user_id>", methods=['GET'])
+@app.route("/own-post", methods=['GET'])
 @token_require
-def get_own_post(user_id):
+def get_own_post():
+    token = request.headers.get('token')
+    user_id = User.decode_auth_token(token)['user_id']
     posts = Post.query.filter(Post.owner_id == user_id).all()
     result = posts_schema.dump(posts)
     return jsonify(result.data)
