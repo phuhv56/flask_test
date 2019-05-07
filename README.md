@@ -1,4 +1,4 @@
-install prerequisites pipenv
+install prerequisites pipenv before start
 
 1. pipenv install
 2. pipenv run python app.py
