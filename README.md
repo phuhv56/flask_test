@@ -1,3 +1,5 @@
+Tech stack: flask, flask-SQLalchemy, flask-dance, sqlite, pyjwt
+
 install prerequisites pipenv before start
 
 1. pipenv install
